@@ -43,6 +43,24 @@ namespace WebApiContrib.Core.Csv.Tests
             Assert.Equal(Book.Data[1].Title, books[1].Title);
         }
 
+        [Fact]
+        public async Task GetCollection_StronglyTypedEnumerable_Text_Csv_Header()
+        {
+            var client = _server.CreateClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Get, "/api/books/enumerable");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/Csv"));
+            var result = await client.SendAsync(request);
+            var books = Deserialize<Book>(new StreamReader(await result.Content.ReadAsStreamAsync()));
+
+            Assert.Equal(2, books.Length);
+            Assert.Equal(Book.Data[0].Author, books[0].Author);
+            Assert.Equal(Book.Data[0].Title, books[0].Title);
+            Assert.Equal(Book.Data[1].Author, books[1].Author);
+            Assert.Equal(Book.Data[1].Title, books[1].Title);
+        }
+
+
         [Fact(Skip = "Returns json instead of csv")]
         public async Task GetById_Text_Csv_Header()
         {
@@ -74,7 +92,7 @@ namespace WebApiContrib.Core.Csv.Tests
 
             MemoryStream stream = new MemoryStream();
             StreamWriter writer = new StreamWriter(stream);
-            Serialize(writer,new[] { book });
+            Serialize(writer, new[] { book });
             writer.Flush();
 
             HttpContent data = new StreamContent(stream);

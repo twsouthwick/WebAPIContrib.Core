@@ -68,7 +68,7 @@ namespace WebApiContrib.Core.Formatter.Csv
         {
             var response = context.HttpContext.Response;
 
-            Type type = context.Object.GetType();
+            Type type = context.ObjectType;
             Type itemType;
 
             if (type.GetGenericArguments().Length > 0)
